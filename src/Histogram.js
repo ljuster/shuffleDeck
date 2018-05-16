@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
-// import {connect} from "react-redux"
 
-
-class CurrencyRates extends Component {
+class Histogram extends Component {
 
   render() {
     return (
-      <table className="currency-table">
+      <table className="deck-table">
         <caption>Real Time Exchange Rates </caption>
         <tbody>
           <tr align="center">
@@ -47,16 +45,5 @@ class CurrencyRates extends Component {
     )
   }
 }
-//
-//
-// const mapStateToProps = (state) => {
-//   return {
-//     USD: state.USD,
-//     EUR: state.EUR,
-//     GBP: state.GBP,
-//     JPY: state.JPY,
-//     AUD: state.AUD
-//   }
-// }
 
-export default (CurrencyRates);
+export default (Histogram);
