@@ -6,7 +6,7 @@ import API_KEY from './config.js';
 
 // Anna, I put this here because now it is reachable by tests
 export const createTradePermutations = (deck) => {
-  let fourArrays = shuffle([1,2])
+  let fourArrays = Shuffle([deck])
   let threeArrays = fourArrays.map(array => {
     return array.slice(0,3)
   })
@@ -17,27 +17,17 @@ export const createTradePermutations = (deck) => {
   return allArrays
 }
 
-function shuffle(deck) {
-  var length = deck.length,
-      result = [deck.slice()],
-      c = new Array(length).fill(0),
-      i = 1, k, p;
+export const Shuffle = (deck) => {
+  var m = deck.length
+  let i, t;
 
-  while (i < length) {
-    if (c[i] < i) {
-      k = i % 2 && c[i];
-      p = deck[i];
-      deck[i] = deck[k];
-      deck[k] = p;
-      ++c[i];
-      i = 1;
-      result.push(deck.slice());
-    } else {
-      c[i] = 0;
-      ++i;
-    }
+  while (m > 0) {
+    i = Math.floor(Math.random() * m--)
+    t = deck[m]
+    deck[m] = deck[i]
+    deck[i] = t
   }
-  return result;
+  return deck
 }
 
 class MainContainer extends Component {
@@ -51,39 +41,16 @@ class MainContainer extends Component {
       }
     }
 
-  state= {
-    allCurrencies:["USD", "EUR", "GBP", "JPY", "AUD"],
-    baseCurrency: "USD",
-    baseCurrencySymbol:"$",
-    currentCurrency: "USD",
-    currentExchange:1,
-    currentMoney: 0,
-    maxInvestment: 1000,
-    nonBaseCurrencies:["EUR", "GBP", "JPY", "AUD"],
-    successfulTrades:[],
-    timeOfLastFetch: "",
-    trade: false,
-    tradePermutations:[],
-    USD:{},
-    EUR:{},
-    GBP:{},
-    JPY:{},
-    AUD:{}
-  }
-
   componentDidMount = () => {
-    this.setState({tradePermutations: createTradePermutations(this.state.nonBaseCurrencies)})
+
   }
 
   componentWillReceiveProps = () => {
-    this.startTrades()
+
   }
 
   clearPreviousTrades = () => {
     this.setState({successfulTrades: []})
-  }
-
-  fetchRates = (currency) => {
   }
 
   updateMaxInvestment = (input) => {
@@ -151,7 +118,12 @@ class MainContainer extends Component {
       <div className="main-container">
         <h2>Shuffle Simulation</h2>
         <div className= "top-row">
-          {this.state.deck}
+        <ul>
+          {this.state.deck.map(val => <li>{val}</li>)}
+        </ul>
+        <ul>
+          {Shuffle(this.state.deck).map(val => <li>{val}</li>)}
+        </ul>
           <Inputs startTrades = {this.startTrades}
                   maxInvestment = {this.state.maxInvestment}
                   updateMaxInvestment = {this.updateMaxInvestment}
