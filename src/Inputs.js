@@ -4,10 +4,10 @@ class Inputs extends Component {
 
   calculateTotalProfits = () => {
     let output = {trades: 0, totalProfits: 0}
-    this.props.successfulTrades.forEach(trade => {
-      output.trades++
-      output.totalProfits += parseFloat(trade.profits)
-    })
+    // this.props.successfulTrades.forEach(trade => {
+    //   output.trades++
+    //   output.totalProfits += parseFloat(trade.profits)
+    // })
     output.totalProfits = parseFloat(Math.round((output.totalProfits) * 100) / 100).toFixed(2);
     return output
   }
@@ -43,7 +43,7 @@ class Inputs extends Component {
       <div className="input-form">
         <h3>Inputs</h3>
         <form >
-          <label>{`What is your maximum investment?`}<br></br>{`(whole ${this.props.baseCurrencySymbol} only)`}
+          <label>{`Input Deck`}<br></br>{`(whole ${this.props.baseCurrencySymbol} only)`}
           <br></br>
           <input type= "text"
             value= {this.props.maxInvestment}

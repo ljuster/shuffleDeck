@@ -5,8 +5,8 @@ import TradeTable from './TradeTable'
 import API_KEY from './config.js';
 
 // Anna, I put this here because now it is reachable by tests
-export const createTradePermutations = (nonBaseCurrencies) => {
-  let fourArrays = permute(nonBaseCurrencies)
+export const createTradePermutations = (deck) => {
+  let fourArrays = shuffle([1,2])
   let threeArrays = fourArrays.map(array => {
     return array.slice(0,3)
   })
@@ -17,21 +17,21 @@ export const createTradePermutations = (nonBaseCurrencies) => {
   return allArrays
 }
 
-function permute(permutation) {
-  var length = permutation.length,
-      result = [permutation.slice()],
+function shuffle(deck) {
+  var length = deck.length,
+      result = [deck.slice()],
       c = new Array(length).fill(0),
       i = 1, k, p;
 
   while (i < length) {
     if (c[i] < i) {
       k = i % 2 && c[i];
-      p = permutation[i];
-      permutation[i] = permutation[k];
-      permutation[k] = p;
+      p = deck[i];
+      deck[i] = deck[k];
+      deck[k] = p;
       ++c[i];
       i = 1;
-      result.push(permutation.slice());
+      result.push(deck.slice());
     } else {
       c[i] = 0;
       ++i;
@@ -41,6 +41,15 @@ function permute(permutation) {
 }
 
 class MainContainer extends Component {
+  constructor (props) {
+      super(props)
+      this.state = {
+        deck: [
+          1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,
+          26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52
+        ]
+      }
+    }
 
   state= {
     allCurrencies:["USD", "EUR", "GBP", "JPY", "AUD"],
@@ -63,7 +72,6 @@ class MainContainer extends Component {
   }
 
   componentDidMount = () => {
-    setInterval(this.getRates(this.state.allCurrencies), 60000);
     this.setState({tradePermutations: createTradePermutations(this.state.nonBaseCurrencies)})
   }
 
@@ -71,24 +79,11 @@ class MainContainer extends Component {
     this.startTrades()
   }
 
-  getRates = (currencyArray) => {
-    currencyArray.forEach(currency => {
-      console.log("in getrates")
-      this.fetchRates(currency)
-    })
-  }
-
   clearPreviousTrades = () => {
     this.setState({successfulTrades: []})
   }
 
   fetchRates = (currency) => {
-    console.log("in fetchrates")
-    fetch(`https://data.fixer.io/api/latest?access_key=${API_KEY}&base=${currency}&symbols=USD,AUD,EUR,JPY,GBP`)
-    .then(response => response.json())
-    .then(data => {
-      this.setState({[data.base]: data.rates, timeOfLastFetch: new Date()})
-    })
   }
 
   updateMaxInvestment = (input) => {
@@ -102,31 +97,10 @@ class MainContainer extends Component {
 
   refreshRates = () => {
     console.log("in refresh")
-    this.getRates(this.state.allCurrencies)
   }
 
   changeBaseCurrency = (currency) => {
-    let symbol = ""
-    switch(currency) {
-    case "USD":
-        symbol = "$"
-        break;
-    case "EUR":
-        symbol = "€"
-        break;
-    case "AUD":
-        symbol = "A$"
-        break;
-    case "JPY":
-        symbol = "¥"
-        break;
-    case "GBP":
-        symbol = "£"
-        break;
-    default:
-        console.log("error")
-    }
-    this.setState({baseCurrency:currency, baseCurrencySymbol:symbol})
+    this.setState({baseCurrency:currency, baseCurrencySymbol:'lkjjk'})
   }
 
   startTrades = () => {
@@ -175,8 +149,9 @@ class MainContainer extends Component {
   render() {
     return (
       <div className="main-container">
-        <h2>Foreign Exchange Arbitrage Simulation</h2>
+        <h2>Shuffle Simulation</h2>
         <div className= "top-row">
+          {this.state.deck}
           <Inputs startTrades = {this.startTrades}
                   maxInvestment = {this.state.maxInvestment}
                   updateMaxInvestment = {this.updateMaxInvestment}
