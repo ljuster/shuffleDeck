@@ -2,14 +2,19 @@
 
 ## Initial setup 🚀
 
-#### To Run locally
+#### To Run Tests locally
 Clone normally
 ```bash
-git clone git@github.com:hyfn/hyfn8_front_end_app.git
+git clone https://github.com/ljuster/shuffleDeck.git
 ```
 
-Then init and update the submodules
+Assuming you have node and other dependencies to build a react node app....
+Download dependencies...
 ```bash
-git submodule init
-git submodule update
+yarn install
+```
+
+To Run Test file
+```bash
+yarn jest
 ```
