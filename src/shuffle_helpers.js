@@ -52,13 +52,12 @@
 //     return ([].concat(array)).sort(); // Do a clearly unfair shuffle
 //   }
 // };
-import { table } from 'table'
 import { uniq, sumBy, range, shuffle, isEmpty } from 'lodash'
 
 export const createSortedDeck = (len) => {
   let deck = new Array(len).fill(0,0)
 
-  range(1,len+1).map(val => deck[val-1] = val)
+  range(0,len).map(val => deck[val] = val)
   return deck
 }
 
