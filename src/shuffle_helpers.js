@@ -52,6 +52,7 @@
 //     return ([].concat(array)).sort(); // Do a clearly unfair shuffle
 //   }
 // };
+import { table } from 'table'
 import { uniq, sumBy, range, shuffle, isEmpty } from 'lodash'
 
 export const createSortedDeck = (len) => {
@@ -82,21 +83,32 @@ export const calculateEntropy = (deck) => {
 
 export const isShuffleFair = (shuffleFunc, len) => {
   let startDeck = createSortedDeck(len)
-  let shuffledDeck
-  const results = range(0,10).map((val) => {
-    shuffledDeck = isEmpty(shuffledDeck) ? shuffleFunc(startDeck) : shuffleFunc(shuffledDeck)
-    return { deck: shuffledDeck, entropy: calculateEntropy(shuffledDeck) }
+
+  const results = range(0,20).map((val) => {
+    const shuffledDeck = shuffleFunc(flipTwoVals(startDeck, val))
+
+    return { entropy: calculateEntropy(shuffledDeck) }
   })
 
-  const somewhatArbitraryThreshold = len/20 < 3 ? len/20 : 3
-  const entropyValsDistinct = results.length - uniq(results.map(res => res.entropy)).length < 3
+  // entropy vals did not appear consistently above 3 until deck size > 40
+  const somewhatArbitraryThreshold = calcThreshold(len)
+  const entropyValsDistinct = uniq(results.map(res => res.entropy)).length/results.length > .85
   const entropyValsAboveThreshold = results.filter(res => res.entropy > somewhatArbitraryThreshold)
-  console.log('dist', len/20)
-  console.log('thresh', entropyValsAboveThreshold.length)
-  return entropyValsDistinct && entropyValsAboveThreshold.length === results.length
+
+  return entropyValsDistinct && (entropyValsAboveThreshold.length/results.length > .85)
 }
 
-export const Shuffle = (deck) => {
+export const flipTwoVals = (deck, val) => {
+  let i,temp
+  i = Math.floor(Math.random() * deck.length)
+  temp = deck[val]
+  deck[val] = deck[i]
+  deck[i] = temp
+  return deck
+}
+
+// https://bost.ocks.org/mike/shuffle/
+export const fisherYatesShuffle = (deck) => {
   let m = deck.length
   let i, t;
 
@@ -107,4 +119,12 @@ export const Shuffle = (deck) => {
     deck[i] = t
   }
   return deck
+}
+
+export const calcThreshold = (size) => {
+  if (size < 10) return 1
+  if (size < 20) return 1.5
+  if (size < 30) return 2
+  if (size < 41) return 2.5
+  return 3
 }
